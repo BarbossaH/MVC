@@ -7,4 +7,5 @@
         SettingsView,
         MessageView,
         LoadingView,
+        SelectLevelView,
     }

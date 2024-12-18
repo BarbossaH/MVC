@@ -2,5 +2,6 @@
     {
         GameUIController,
         GameController,
-        LoadingController
+        LoadingController,
+        LevelController,
     }

@@ -10,14 +10,14 @@ namespace MVC
     /// </summary>
     public class ControllerManager
     {
-        private readonly Dictionary<int, BaseController> _modules = new Dictionary<int, BaseController>();
+        private readonly Dictionary<int, BaseController> _controllers = new Dictionary<int, BaseController>();
 
         public void RegisterModule(int controllerKey, BaseController controller)
         {
-            _modules.TryAdd(controllerKey, controller);
-            // if (_modules.ContainsKey(controllerKey) == false)
+            _controllers.TryAdd(controllerKey, controller);
+            // if (_controllers.ContainsKey(controllerKey) == false)
             // {
-            //     _modules.Add(controllerKey, controller);
+            //     _controllers.Add(controllerKey, controller);
             // }
         }
 
@@ -29,57 +29,57 @@ namespace MVC
         //z执行所有控制器的init函数
         public void InitAllModules()
         {
-            foreach (var module in _modules)
+            foreach (var controller in _controllers)
             {
-                module.Value.Init();
+                controller.Value.Init();
             }
         }
 
         public void UnregisterModule(int controllerKey)
         {
-            if (_modules.ContainsKey(controllerKey))
+            if (_controllers.ContainsKey(controllerKey))
             {
-                _modules.Remove(controllerKey);
+                _controllers.Remove(controllerKey);
             }
         }
 
         public void Clear()
         {
-            _modules.Clear();
+            _controllers.Clear();
         }
 
         public void ClearAllModules()
         {
-            List<int>Keys = _modules.Keys.ToList();
+            List<int>Keys = _controllers.Keys.ToList();
 
             for (int i = 0; i< Keys.Count; i++)
             {
-                _modules[Keys[i]].Destroy();
-                _modules.Remove(Keys[i]);
+                _controllers[Keys[i]].Destroy();
+                _controllers.Remove(Keys[i]);
             }
         }
 
         //跨模板触发消息
         public void ApplyFunc(int controllerKey, string eventName, System.Object[] args)
         {
-            // if (_modules.ContainsKey(controllerKey))
+            // if (_controllers.ContainsKey(controllerKey))
             // {
-            //     _modules[controllerKey].ApplyFunc(eventName, args);
+            //     _controllers[controllerKey].ApplyFunc(eventName, args);
             // }   
-            if (_modules.TryGetValue(controllerKey, out var module))
+            if (_controllers.TryGetValue(controllerKey, out var controller))
             {
-                module.ApplyFunc(eventName, args);
+                controller.ApplyFunc(eventName, args);
             }   
         }
 
         //获取某控制器的model对象
         public BaseModel GetControllerModel(int controllerKey)
         {
-            // if (_modules.ContainsKey(controllerKey))
+            // if (_controllers.ContainsKey(controllerKey))
             // {
-            //     return _modules[controllerKey].GetModel();
+            //     return _controllers[controllerKey].GetModel();
             // }
-            if (_modules.TryGetValue(controllerKey, out var module))
+            if (_controllers.TryGetValue(controllerKey, out var module))
             {
                 return module.GetModel();
             }

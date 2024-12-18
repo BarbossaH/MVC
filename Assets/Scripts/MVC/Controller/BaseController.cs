@@ -7,7 +7,7 @@ namespace Controller
 {
     public class BaseController
     {
-        private readonly Dictionary<string, System.Action<object[]>> _messages = new Dictionary<string, System.Action<object[]>>();
+        private readonly Dictionary<string, System.Action<object[]>> _eventDictionary = new Dictionary<string, System.Action<object[]>>();
         protected BaseModel _model;
         
         //注册后调用的初始化函数，要所有的控制器初始化后执行
@@ -20,34 +20,34 @@ namespace Controller
 
         public void RegisterFunc(string eventName, System.Action<object[]> callback)
         {
-            if (!_messages.TryAdd(eventName, callback))
+            if (!_eventDictionary.TryAdd(eventName, callback))
             {
-                _messages[eventName] += callback;
+                _eventDictionary[eventName] += callback;
             }
             
-            // if (!_messages.ContainsKey(eventName))
+            // if (!_eventDictionary.ContainsKey(eventName))
             // {
-            //     _messages.Add(eventName, callback);
+            //     _eventDictionary.Add(eventName, callback);
             // }
             // else
             // {
-            //     _messages[eventName] += callback;
+            //     _eventDictionary[eventName] += callback;
             // }
         }
 
         public void UnregisterFunc(string eventName)
         {
-            if (_messages.ContainsKey(eventName))
+            if (_eventDictionary.ContainsKey(eventName))
             {
-                _messages.Remove(eventName);
+                _eventDictionary.Remove(eventName);
             }
         }
 
         public void ApplyFunc(string eventName, params object[] args)
         {
-            if (_messages.ContainsKey(eventName))
+            if (_eventDictionary.ContainsKey(eventName))
             {
-                _messages[eventName].Invoke(args);
+                _eventDictionary[eventName].Invoke(args);
             }
             else
             {
@@ -57,6 +57,8 @@ namespace Controller
 
         public void ApplyControllerFunc(int controllerId, string eventName, params object[] args)
         {
+            //when creating a new controller, we should register the new controller into controller manager first, and we can access each controller through the controller id. After getting the controller, we can use this controller to access its event dictionary to call the event when necessarily
+            
             //trigger other controller events
             GameManager.ControllerManager.ApplyFunc(controllerId, eventName, args);
         }

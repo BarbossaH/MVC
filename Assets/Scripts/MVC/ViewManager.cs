@@ -121,6 +121,7 @@ namespace MVC
             IBaseView localView = GetView(viewId);
             ViewInfo viewInfo = _viewInfos[viewId];
 
+            //if local isn't created before, then create the view
             if (localView == null)
             {
                 //if view does not exist, then load this resource of the view
@@ -160,6 +161,8 @@ namespace MVC
                     viewInfo.Controller.OnLoadView(localView);
                 }
             }
+            
+            //add the view to opened view dictionary
             if (!_openedViews.TryAdd(viewId, localView))
             {
                 return;
@@ -176,9 +179,9 @@ namespace MVC
                 if (localView != null)
                 {
                     localView.InitUI();
-                    localView.InitData();
+                    localView.InitData(); //set the initialized variable as true
                     localView.Open(args);
-                    localView.Controller.OpenView(localView);
+                    viewInfo.Controller.OpenView(localView);
                 }
             }
         }

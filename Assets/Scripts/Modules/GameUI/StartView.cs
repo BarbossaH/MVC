@@ -26,7 +26,13 @@ namespace GameUI
             
             LoadingModel loadingModel = new LoadingModel
             {
-                SceneName = "map"
+                SceneName = "map",
+                //set the callback, this callback will be called when finishing loading the map scene.
+                Callback = ()=>
+                {
+                    //open select level view
+                    Controller.ApplyControllerFunc(ControllerType.LevelController,Defines.OpenSelectLevelView);
+                }
             };
             Controller.ApplyControllerFunc(ControllerType.LoadingController, Defines.LoadingScene, loadingModel);
         }

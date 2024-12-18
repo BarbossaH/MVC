@@ -40,6 +40,7 @@ namespace Controller
             InitGlobalEvent();
         }
 
+        //each controller has a manager of events, which is a dictionary. After registering the events, we can call these events based on the key, which is written in the base controller class.
         public override void InitModuleEvent()
         {
             RegisterFunc(Defines.OpenStartView,OpenStartView); //注册打开开始面板

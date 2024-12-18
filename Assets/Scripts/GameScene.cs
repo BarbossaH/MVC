@@ -1,8 +1,6 @@
     using Config;
     using Controller;
-
     using UnityEngine;
-
     //this script needs to be mounted onto a game object, so it cannot be deleted when changing scene
     public class GameScene:MonoBehaviour
     {
@@ -28,16 +26,22 @@
 
         private void Start()
         {
+
             //set cursor texture
             Cursor.SetCursor(mouseTexture,Vector2.zero, CursorMode.Auto);
             
             //load all configuration files
             RegisterConfig();
-            
-            //test configuration
-            ConfigData temp = GameManager.ConfigManager.GetConfig("enemy");
-            string name = temp.GetDataById(10001)["Name"];
-            Debug.Log(name);
+
+            #region test code
+
+            // //test configuration
+            // ConfigData temp = GameManager.ConfigManager.GetConfig("enemy");
+            // string name = temp.GetDataById(10001)["Name"];
+            // Debug.Log(name);
+
+            #endregion
+   
             //play the background music
             GameManager.SoundManager.PlayBGM("login");
 
@@ -55,10 +59,11 @@
 
         private void RegisterModule()
         {
-            //store each manager into the controller dictionary.
+            //store each manager into the controller dictionary. after I created a controller, I should register it into the controller manager immediately
             GameManager.ControllerManager.RegisterModule(ControllerType.GameUIController, new GameUIController());
             GameManager.ControllerManager.RegisterModule(ControllerType.GameController, new GameController());
             GameManager.ControllerManager.RegisterModule(ControllerType.LoadingController, new LoadingController());
+            GameManager.ControllerManager.RegisterModule(ControllerType.LevelController, new LevelController());
         }
 
         //执行所有控制器初始化
