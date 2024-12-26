@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Common.Def;
 using Controller;
 using View;
 using UnityEngine;
@@ -16,14 +17,35 @@ namespace MVC
     }
     public class ViewManager
     {
-        public readonly Transform CanvasTransform = GameObject.Find("Canvas").transform;
-        public Transform WorldCanvasTransform=GameObject.Find("WorldCanvas").transform;
+        private readonly Transform _canvasTransform = GameObject.Find("Canvas").transform;
+        private readonly Transform _worldCanvasTransform=GameObject.Find("WorldCanvas").transform;
         readonly Dictionary<int, IBaseView> _openedViews = new Dictionary<int, IBaseView>();
         readonly Dictionary<int, IBaseView> _viewsCache = new Dictionary<int, IBaseView>();
         readonly Dictionary<int, ViewInfo> _viewInfos = new Dictionary<int, ViewInfo>();
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="viewType">预制体的名字和脚本的名字和枚举的名字必须统一，一模一样</param>
+        /// <param name="controller"></param>
+        /// <param name="sortingOrder"></param>
+        /// <param name="isGlobal"></param>
+        public void RegisterView(ViewType viewType,  BaseController controller, int sortingOrder=0, bool isGlobal=false)
+        {
+            // Debug.Log(viewType.ToString());
+            int viewId = (int)viewType;
+            ViewInfo viewInfo = new ViewInfo()
+            {
+                PrefabName = viewType.ToString(),
+                SortingOrder = sortingOrder,
+                Controller = controller,
+                ParentTransform = isGlobal? _worldCanvasTransform:_canvasTransform,
+            };
+            _viewInfos.TryAdd(viewId, viewInfo);
+        }
         public void RegisterView(int viewId, ViewInfo viewInfo)
         {
+
             _viewInfos.TryAdd(viewId, viewInfo);
             // if (!_viewInfos.ContainsKey(viewId))
             // {
@@ -128,7 +150,7 @@ namespace MVC
                 // string type = $"MVC.View.{((ViewType)viewId).ToString()}";
                 
                 //the type of view should be the same with the script filename
-                string type =$"GameUI.{((ViewType)viewId).ToString()}"; 
+                string type =$"View.{((ViewType)viewId).ToString()}"; 
                 GameObject uiObj = UnityEngine.Object.Instantiate(Resources.Load($"View/{viewInfo.PrefabName}"),viewInfo.ParentTransform) as GameObject;
                 if (uiObj != null)
                 {
@@ -168,21 +190,27 @@ namespace MVC
                 return;
             }
 
-            if (localView != null && localView.IsInitialized())
+            if (localView != null)
             {
-                localView.SetVisible(true);
-                localView.Open(args);
-                viewInfo.Controller.OpenView(localView);
-            }
-            else
-            {
-                if (localView != null)
+                // if (localView.IsInitialized())
+                // {
+                //     localView.SetVisible(true);
+                //
+                // }
+                // else
+                // {
+                //     //first time to load
+                //     localView.InitUI();
+                //     localView.InitData(); //set the initialized variable as true
+                //
+                // }
+                if (!localView.IsInitialized())
                 {
                     localView.InitUI();
-                    localView.InitData(); //set the initialized variable as true
-                    localView.Open(args);
-                    viewInfo.Controller.OpenView(localView);
+                    localView.InitData();
                 }
+                localView.ShowView(args);
+                viewInfo.Controller.OpenView(localView);
             }
         }
 

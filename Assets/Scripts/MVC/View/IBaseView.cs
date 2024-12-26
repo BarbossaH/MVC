@@ -8,7 +8,7 @@ namespace View
         bool IsShown();
         void InitUI();
         void InitData();
-        void Open(params object[] args);
+        void ShowView(params object[] args);
         void Close(params object[] args);
 
         void DestroyView();

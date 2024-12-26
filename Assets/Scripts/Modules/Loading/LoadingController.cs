@@ -1,9 +1,8 @@
-using Common;
-using GameModel;
-using MVC;
+using Common.Def;
+using Model;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using Debug = System.Diagnostics.Debug;
+
 
 namespace Controller
 {
@@ -13,19 +12,15 @@ namespace Controller
         private AsyncOperation _asyncOperation;
         public LoadingController() : base()
         {
-            GameManager.ViewManager.RegisterView(ViewType.LoadingView, new ViewInfo()
-            {
-                PrefabName = "LoadingView",
-                Controller = this,
-                ParentTransform = GameManager.ViewManager.CanvasTransform
-            });
+            GameManager.ViewManager.RegisterView(ViewType.LoadingView, this);
+     
             InitModuleEvent();
         }
 
         public sealed override void InitModuleEvent()
         {
             base.InitModuleEvent();
-            RegisterFunc(Defines.LoadingScene, LoadSceneCallback);
+            RegisterFunc(CallbackFuncName.LoadingScene, LoadSceneCallback);
         }
 
         private void LoadSceneCallback(System.Object[] args)
@@ -46,9 +41,12 @@ namespace Controller
         {
             _asyncOperation.completed -= OnFinishLoadingCallback;
             
-            GetModel<LoadingModel>().Callback?.Invoke();
-            
-            GameManager.ViewManager.CloseView((int) ViewType.LoadingView);
+      
+            GameManager.TimerManager.RegisterTimer(0.25f, delegate()
+            {
+                GetModel<LoadingModel>().Callback?.Invoke();
+                GameManager.ViewManager.CloseView((int) ViewType.LoadingView);
+            });
         }
     }
     

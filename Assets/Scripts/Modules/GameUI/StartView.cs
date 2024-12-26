@@ -1,10 +1,11 @@
 using Common;
-using GameModel;
+using Common.Def;
+using Model;
 using View;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace GameUI
+namespace View
 {
     /// <summary>
     /// start game UI
@@ -24,32 +25,34 @@ namespace GameUI
             //close the start view ui
             GameManager.ViewManager.CloseView(ViewId);
             
-            LoadingModel loadingModel = new LoadingModel
-            {
-                SceneName = "map",
-                //set the callback, this callback will be called when finishing loading the map scene.
-                Callback = ()=>
-                {
-                    //open select level view
-                    Controller.ApplyControllerFunc(ControllerType.LevelController,Defines.OpenSelectLevelView);
-                }
-            };
-            Controller.ApplyControllerFunc(ControllerType.LoadingController, Defines.LoadingScene, loadingModel);
+            GameManager.SceneLoader.LoadSceneWithCallback(Controller,"map", ControllerType.LevelController, CallbackFuncName.OpenSelectLevelView);
+            
+        //     LoadingModel loadingModel = new LoadingModel
+        //     {
+        //         SceneName = "map",
+        //         //set the callback, this callback will be called when finishing loading the map scene.
+        //         Callback = ()=>
+        //         {
+        //             //open select level view
+        //             Controller.ApplyControllerFunc(ControllerType.LevelController,CallbackFuncName.OpenSelectLevelView);
+        //         }
+        //     };
+        //     Controller.ApplyControllerFunc(ControllerType.LoadingController, CallbackFuncName.LoadingScene, loadingModel);
         }
 
         private void OnSettingsBtnClicked()
         {
-            ApplyFunc(Defines.OpenSettingsView);
+            ApplyFunc(CallbackFuncName.OpenSettingsView);
         }
 
         private void OnQuitBtnClicked()
         {
-            ApplyFunc(Defines.OpenMessageView, new MessageInfo()
+            ApplyFunc(CallbackFuncName.OpenMessageView, new MessageInfo()
             {
                 MessageText="Are you sure you want to quit?",
                 OkAction = QuitGame,
             });
-            // Controller.ApplyControllerFunc(ControllerType.GameUIController,Defines.OpenMessageView, new MessageInfo()
+            // Controller.ApplyControllerFunc(ControllerType.GameUIController,CallbackFuncName.OpenMessageView, new MessageInfo()
             // {
             //     MessageText="Are you sure you want to quit?",
             //     OkAction = QuitGame,

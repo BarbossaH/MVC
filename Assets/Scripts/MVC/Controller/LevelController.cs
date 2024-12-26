@@ -1,7 +1,7 @@
 using Common;
-using Controller;
-using GameUI;
-using MVC;
+using Common.Def;
+using View;
+using Model;
 
 namespace Controller
 {
@@ -10,21 +10,24 @@ namespace Controller
         //register each controller into controller manager
         public LevelController()
         {
-            GameManager.ViewManager.RegisterView(ViewType.SelectLevelView, new ViewInfo()
-            {
-                PrefabName = "SelectLevelView",
-                Controller = this,
-                ParentTransform = GameManager.ViewManager.CanvasTransform
-            });
+            SetModel(new LevelModel());
+            
+            GameManager.ViewManager.RegisterView(ViewType.SelectLevelView, this);
             
             //Initialize the events that this controller response for
             InitModuleEvent();
             InitGlobalEvent();
         }
 
+        public override void Init()
+        {
+            base.Init();
+            _model.Init();
+        }
+
         public sealed override  void InitModuleEvent()
         {
-            RegisterFunc(Defines.OpenSelectLevelView, OpenSelectLevelView);
+            RegisterFunc(CallbackFuncName.OpenSelectLevelView, OpenSelectLevelView);
         }
 
         private void OpenSelectLevelView(System.Object[] args)
@@ -36,16 +39,21 @@ namespace Controller
         public sealed override void InitGlobalEvent()
         {
             //because this event isn't to open the main view, instead of opening a component, so here uses event to do implement this
-            GameManager.EventCenter.AddEvent(Defines.ShowLevelDesEvent,ShowLevelDesCallback);
-            GameManager.EventCenter.AddEvent(Defines.HideLevelDesEvent,HideLevelDesCallback);
+            GameManager.EventCenter.AddEvent(CallbackFuncName.ShowLevelDesEvent,ShowLevelDesCallback);
+            GameManager.EventCenter.AddEvent(CallbackFuncName.HideLevelDesEvent,HideLevelDesCallback);
         }
 
-        private void ShowLevelDesCallback(object obj)
+        private void ShowLevelDesCallback(System.Object obj)
         {
+            // Debug.Log("LevelId:"+ obj.ToString());
+            LevelModel lm = GetModel<LevelModel>();
+            lm.CurrentLevel = lm.GetLevelData((int)obj);
+            // lm.currentLevel = lm.GetLevelData(int.Parse(obj.ToString()));
+
             GameManager.ViewManager.GetView<SelectLevelView>((int)ViewType.SelectLevelView).ShowLevelDescription();
         }
 
-        private void HideLevelDesCallback(object obj)
+        private void HideLevelDesCallback(System.Object obj)
         {
             GameManager.ViewManager.GetView<SelectLevelView>((int)ViewType.SelectLevelView).HideLevelDescription();
         }
@@ -53,8 +61,8 @@ namespace Controller
         public sealed override void RemoveGlobalEvent()
         {
             base.RemoveGlobalEvent();
-            GameManager.EventCenter.RemoveEnvent(Defines.ShowLevelDesEvent,ShowLevelDesCallback);
-            GameManager.EventCenter.RemoveEnvent(Defines.HideLevelDesEvent,HideLevelDesCallback);
+            GameManager.EventCenter.RemoveEnvent(CallbackFuncName.ShowLevelDesEvent,ShowLevelDesCallback);
+            GameManager.EventCenter.RemoveEnvent(CallbackFuncName.HideLevelDesEvent,HideLevelDesCallback);
 
         }
 

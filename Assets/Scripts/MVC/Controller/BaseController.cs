@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Common.Def;
 using Model;
 using View;
 using UnityEngine;
@@ -20,19 +21,12 @@ namespace Controller
 
         public void RegisterFunc(string eventName, System.Action<object[]> callback)
         {
+            // Debug.Log(eventName);
             if (!_eventDictionary.TryAdd(eventName, callback))
             {
                 _eventDictionary[eventName] += callback;
             }
             
-            // if (!_eventDictionary.ContainsKey(eventName))
-            // {
-            //     _eventDictionary.Add(eventName, callback);
-            // }
-            // else
-            // {
-            //     _eventDictionary[eventName] += callback;
-            // }
         }
 
         public void UnregisterFunc(string eventName)
@@ -45,6 +39,12 @@ namespace Controller
 
         public void ApplyFunc(string eventName, params object[] args)
         {
+            // Debug.Log(eventName);
+
+            // foreach (var item in _eventDictionary)
+            // {
+            //     Debug.Log(item.Key);
+            // }
             if (_eventDictionary.ContainsKey(eventName))
             {
                 _eventDictionary[eventName].Invoke(args);

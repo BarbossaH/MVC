@@ -9,12 +9,12 @@ namespace View
         private bool _isInitialized;
         public int ViewId { get; set; }
         public BaseController Controller { get; set; }
-        
-        protected Canvas _canvas;
-        protected readonly Dictionary<string, GameObject> m_cache_gameobjects = new Dictionary<string, GameObject>();
+
+        protected Canvas CanvasComponent; //this canvas belongs to each main ui view, via controlling the enabled variable to show and hide the view, see the SetVisible() method
+        private readonly Dictionary<string, GameObject> _mCacheGameObjects = new Dictionary<string, GameObject>();
         private void Awake()
         {
-            _canvas = GetComponent<Canvas>();
+            CanvasComponent = GetComponent<Canvas>();
             OnAwake();
         }
 
@@ -38,7 +38,7 @@ namespace View
 
         public bool IsShown()
         {
-           return _canvas.enabled=true;
+           return CanvasComponent.enabled=true;
         }
 
         public virtual void InitUI()
@@ -51,8 +51,13 @@ namespace View
             _isInitialized = true;
         }
 
-        public virtual void Open(params object[] args)
+        /// <summary>
+        /// set the canvas of this view enabled that makes this view visible
+        /// </summary>
+        /// <param name="args"></param>
+        public virtual void ShowView(params object[] args)
         {
+            SetVisible(true);
         }
 
         public virtual void Close(params object[] args)
@@ -78,18 +83,18 @@ namespace View
 
         public void SetVisible(bool visible)
         {
-            _canvas.enabled = visible;
+            CanvasComponent.enabled = visible;
         }
 
         public GameObject Find(string res)
         {
-            if (m_cache_gameobjects.ContainsKey(res))
+            if (_mCacheGameObjects.ContainsKey(res))
             {
-                return m_cache_gameobjects[res];
+                return _mCacheGameObjects[res];
             }
-            m_cache_gameobjects.Add(res, transform.Find(res).gameObject);
+            _mCacheGameObjects.Add(res, transform.Find(res).gameObject);
             
-            return m_cache_gameobjects[res];
+            return _mCacheGameObjects[res];
         }
 
         // public T Find<T>(string res) where T : Component

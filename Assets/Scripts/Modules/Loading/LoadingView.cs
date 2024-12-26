@@ -1,6 +1,6 @@
 using View;
 
-namespace GameUI
+namespace View
 {
     public class LoadingView:BaseView
     {

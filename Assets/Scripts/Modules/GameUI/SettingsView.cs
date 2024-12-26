@@ -1,7 +1,7 @@
 using View;
 using UnityEngine.UI;
 
-namespace GameUI
+namespace View
 {
     //audio setting ui
     public class SettingsView : BaseView

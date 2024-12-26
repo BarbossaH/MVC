@@ -1,3 +1,4 @@
+    using Common.Def;
     using Config;
     using Controller;
     using UnityEngine;
@@ -64,6 +65,7 @@
             GameManager.ControllerManager.RegisterModule(ControllerType.GameController, new GameController());
             GameManager.ControllerManager.RegisterModule(ControllerType.LoadingController, new LoadingController());
             GameManager.ControllerManager.RegisterModule(ControllerType.LevelController, new LevelController());
+            GameManager.ControllerManager.RegisterModule(ControllerType.BattleController, new BattleController());
         }
 
         //执行所有控制器初始化

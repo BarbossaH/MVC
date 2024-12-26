@@ -9,7 +9,7 @@ namespace Config
     public class ConfigData
     {
         //store data in each csv file to the below dictionary
-        private readonly Dictionary<int, Dictionary<string,string>> _datas = new Dictionary<int, Dictionary<string, string>>();
+        private readonly Dictionary<int, Dictionary<string,string>> _lineData = new Dictionary<int, Dictionary<string, string>>();
 
         public readonly string Filename;
 
@@ -38,24 +38,29 @@ namespace Config
                     //add the data of this line into a dictionary
                     data.Add(tiles[j], tmpArray[j]);
                 }
-                //add each line data (a dictionary) into the _datas, and use the id field in the data as the key
-                _datas.Add(int.Parse(data["Id"]),data);
+                //add each line data (a dictionary) into the _lineData, and use the id field in the data as the key
+                _lineData.Add(int.Parse(data["Id"]),data);
             }
         }
 
+        /// <summary>
+        /// 得到对应id的每一行的数据，每个数据都对应的key-value
+        /// </summary>
+        /// <param name="id">id作为这个数据的索引key</param>
+        /// <returns></returns>
         public Dictionary<string, string> GetDataById(int id)
         {
-            // if (_datas.ContainsKey(id))
+            // if (_lineData.ContainsKey(id))
             // {
-            //     return _datas[id];
+            //     return _lineData[id];
             // }
             // return null;
-            return _datas.GetValueOrDefault(id);
+            return _lineData.GetValueOrDefault(id);
         }
 
         public Dictionary<int, Dictionary<string, string>> GetLines()
         {
-            return _datas;
+            return _lineData;
         }
     }
 }

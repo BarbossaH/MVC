@@ -1,6 +1,5 @@
-using Model;
 
-namespace GameModel
+namespace Model
 {
     public class LoadingModel:BaseModel
     {

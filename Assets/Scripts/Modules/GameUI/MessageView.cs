@@ -1,7 +1,7 @@
 using View;
 using UnityEngine.UI;
 
-namespace GameUI
+namespace View
 {
     public class MessageInfo
     {
@@ -19,7 +19,7 @@ namespace GameUI
             Find<Button>("noBtn").onClick.AddListener(OnCancelBtnClick);
         }
 
-        public override void Open(params object[] args)
+        public override void ShowView(params object[] args)
         {
             messageInfo= args[0] as MessageInfo;
             Find<Text>("content/txt").text = messageInfo?.MessageText;
